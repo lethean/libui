@@ -46,6 +46,14 @@ char *commonItemDialog(HWND parent, REFCLSID clsid, REFIID iid, FILEOPENDIALOGOP
 		logHRESULT(L"error setting options", hr);
 		goto out;
 	}
+	{
+		IShellItem *psiFolder;
+		wchar_t szFilePath[1024];
+
+		GetCurrentDirectoryW(sizeof szFilePath, szFilePath);
+		SHCreateItemFromParsingName(szFilePath, NULL, IID_PPV_ARGS(&psiFolder));
+		d->SetFolder(psiFolder);
+	}
 	hr = d->Show(parent);
 	if (hr == HRESULT_FROM_WIN32(ERROR_CANCELLED))
 		// cancelled; return NULL like we have ready
